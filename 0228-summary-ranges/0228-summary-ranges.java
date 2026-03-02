@@ -1,7 +1,6 @@
 class Solution {
     public List<String> summaryRanges(int[] nums) {
         List<String> output = new ArrayList<String>();
-
         int i = 0;
         while(i < nums.length) {
             int start = nums[i];
