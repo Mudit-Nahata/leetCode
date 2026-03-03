@@ -4,7 +4,7 @@ class Solution {
         int sum = Arrays.stream(nums).sum();
         int org = ( nums.length * ( nums.length + 1 ) ) / 2;
 
-        return ( nums.length * ( nums.length + 1 ) ) / 2 - Arrays.stream(nums).sum();
+        return org - sum;
     }
     
 }
