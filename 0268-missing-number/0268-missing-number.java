@@ -1,10 +1,14 @@
-import java.math.BigInteger;
 class Solution {
     public int missingNumber(int[] nums) {
-        int sum = Arrays.stream(nums).sum();
-        int org = ( nums.length * ( nums.length + 1 ) ) / 2;
+    int n = nums.length;
+    int sum = (n*(n+1))/2;
+    int i=0;
+    int arrsum = 0;
+    while(i<nums.length){
+        arrsum += nums[i];
 
-        return org - sum;
+       i++;
     }
-    
+         return sum - arrsum;
+    }
 }
