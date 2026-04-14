@@ -11,6 +11,7 @@ class Solution {
                 int end = nums[nums.length - 1];
                 System.arraycopy(nums, 0, nums, 1, nums.length-1);
                 nums[0] = end;
+                k-= 1;
             }
         }
     }
