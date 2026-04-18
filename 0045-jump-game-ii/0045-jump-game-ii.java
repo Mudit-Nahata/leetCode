@@ -1,26 +1,33 @@
 class Solution {
     public int jump(int[] nums) {
-        int n = nums.length;
-        if (n <= 1) return 0;
 
-        int jumps = 0;
-        int currEnd = 0;
-        int maxReach = 0;
-
-        // Process indices until second last.
-        for (int i = 0; i < n - 1; i++) {
-            maxReach = Math.max(maxReach, i + nums[i]);
-
-            // End of current range => commit one jump.
-            if (i == currEnd) {
-                jumps++;
-                currEnd = maxReach;
-
-                // If this range already covers last index, stop.
-                if (currEnd >= n - 1) break;
-            }
+        if(nums.length==1){
+            return 0;
         }
+      
+      int jumps = jumpCalculator(1,nums[0],1,nums);
+      
+      return jumps;
 
-        return jumps;
+        
+    }
+
+    int jumpCalculator(int start, int end, int count, int[] nums){
+        if(end >=nums.length-1){
+            return count;
+        }
+        int tempStart = end+1;
+        int tempEnd = tempStart;
+        for(int i = start;i<=end;i++){
+          int x = nums[i] + i ;
+          if(x>tempEnd){
+            tempEnd = x;
+          }
+          if(x >= nums.length-1){
+            return count +1;
+          }
+        }
+        return jumpCalculator(tempStart,tempEnd,count+1,nums);
+
     }
 }
