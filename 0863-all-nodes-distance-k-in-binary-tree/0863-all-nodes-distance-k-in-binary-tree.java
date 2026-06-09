@@ -1,54 +1,39 @@
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
- */
 class Solution {
-    public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
-        List<Integer> ans = new ArrayList<>();
-        int temp = calcDistance(root, target, k, ans);
-        return ans;
+    
+    Map<TreeNode, Integer> map = new HashMap<>();
+        
+    public List<Integer> distanceK(TreeNode root, TreeNode target, int K) {
+        List<Integer> res = new LinkedList<>();
+        find(root, target);
+        dfs(root, target, K, map.get(root), res);
+        return res;
     }
-
-    int calcDistance(TreeNode root, TreeNode target, int k, List<Integer> ans) {
-        if(root == null)    return -1;
-
-        if(root == target) {
-            checkSubtree(root, k, ans);
+    
+    // find target node first and store the distance in that path that we could use it later directly
+    private int find(TreeNode root, TreeNode target) {
+        if (root == null) return -1;
+        if (root == target) {
+            map.put(root, 0);
             return 0;
         }
-        int dl = calcDistance(root.left, target, k, ans);
-        if(dl != -1) {
-            if(dl + 1 == k) {
-                ans.add(root.val);
-            } else {
-                checkSubtree(root.right, k - dl - 2, ans);
-            }
-            return dl + 1;
+        int left = find(root.left, target);
+        if (left >= 0) {
+            map.put(root, left + 1);
+            return left + 1;
         }
-        int dr = calcDistance(root.right, target, k, ans);
-        if(dr != -1){
-            if(dr + 1 == k) {
-                ans.add(root.val);
-            } else {
-                checkSubtree(root.left, k - dr - 2, ans);
-            }
-            return dr + 1;
+		int right = find(root.right, target);
+		if (right >= 0) {
+            map.put(root, right + 1);
+            return right + 1;
         }
         return -1;
     }
-
-    void checkSubtree(TreeNode root, int k, List<Integer> ans) {
-        if(root == null || k < 0)
-            return;
-        if(k == 0) {
-            ans.add(root.val);
-        }
-        checkSubtree(root.left, k-1, ans);
-        checkSubtree(root.right, k-1, ans);
+    
+    private void dfs(TreeNode root, TreeNode target, int K, int length, List<Integer> res) {
+        if (root == null) return;
+        if (map.containsKey(root)) length = map.get(root);
+        if (length == K) res.add(root.val);
+        dfs(root.left, target, K, length + 1, res);
+        dfs(root.right, target, K, length + 1, res);
     }
 }
