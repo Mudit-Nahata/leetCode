@@ -9,48 +9,46 @@
  */
 class Solution {
     public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
-         Map<Integer,TreeNode> parent = new HashMap<>();
-        buildParent(root, null, parent);  // ① Phase 1: record each node's parent
+        List<Integer> ans = new ArrayList<>();
+        int temp = calcDistance(root, target, k, ans);
+        return ans;
+    }
 
-        List<Integer> res = new ArrayList<>();
-        Set<Integer> seen = new HashSet<>();
-        Queue<TreeNode> q = new LinkedList<>();
-        q.offer(target); seen.add(target.val);
+    int calcDistance(TreeNode root, TreeNode target, int k, List<Integer> ans) {
+        if(root == null)    return -1;
 
-        for (int dist = 0; !q.isEmpty(); dist++) {  // ② dist tracks current BFS depth
-            if (dist == k) {                         // ③ reached target depth — collect all
-                q.forEach(n -> res.add(n.val));
-                break;
-            }
-            int sz = q.size();
-            for (int i = 0; i < sz; i++) {
-                TreeNode cur = q.poll();
-                TreeNode par = parent.get(cur.val);  // ④ get parent from map
-                for (TreeNode nb : new TreeNode[]{cur.left, cur.right, par}) {
-                    if (nb != null && seen.add(nb.val)) // ⑤ 3 neighbours: left, right, parent
-                        q.offer(nb);
-                }
-            }
+        if(root == target) {
+            checkSubtree(root, k, ans);
+            return 0;
         }
-        return res;
-        
+        int dl = calcDistance(root.left, target, k, ans);
+        if(dl != -1) {
+            if(dl + 1 == k) {
+                ans.add(root.val);
+            } else {
+                checkSubtree(root.right, k - dl - 2, ans);
+            }
+            return dl + 1;
+        }
+        int dr = calcDistance(root.right, target, k, ans);
+        if(dr != -1){
+            if(dr + 1 == k) {
+                ans.add(root.val);
+            } else {
+                checkSubtree(root.left, k - dr - 2, ans);
+            }
+            return dr + 1;
+        }
+        return -1;
     }
-    private void buildParent(TreeNode node,
-                             TreeNode parentNode,
-                             Map<Integer, TreeNode> parent) {
 
-        if (node == null) return;
-
-        // Store this node's parent
-        parent.put(node.val, parentNode);
-
-        // Recurse left — node is the parent of node.left
-        buildParent(node.left, node, parent);
-
-        // Recurse right — node is the parent of node.right
-        buildParent(node.right, node, parent);
+    void checkSubtree(TreeNode root, int k, List<Integer> ans) {
+        if(root == null || k < 0)
+            return;
+        if(k == 0) {
+            ans.add(root.val);
+        }
+        checkSubtree(root.left, k-1, ans);
+        checkSubtree(root.right, k-1, ans);
     }
-
-
-
 }
